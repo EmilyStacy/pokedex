@@ -5,9 +5,11 @@ const morgan = require('morgan');
 const POKEDEX = require('./pokedex.json');
 const cors = require('cors');
 const app = express();
-app.use(morgan('dev'));
+const morganSetting = process.env.NODE_ENV === 'production'?'tiny':'common';
+app.use(morgan(morganSetting));
 app.use(cors());
 // console.log(process.env.API_TOKEN);
+console.log('process env is', process.env.NODE_ENV)
 app.use(function validateBearerToken(req,res,next) {
     // const bearerToken = req.get('Authorization').split(' ')[1];=>cause error when there is no authorization
     //if(bearerToken !== apiToken) {
@@ -55,7 +57,7 @@ app.get('/pokemon', function handleGetPokemon (req,res) {
     }
     res.json(response);
 });
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT,()=> {
     console.log(`Server listening at http://localhost:${PORT}`)
 })
